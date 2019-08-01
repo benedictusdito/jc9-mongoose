@@ -96,36 +96,35 @@ app.patch("/users/:id", upload.single("avatar"), (req, res) => {
     if (!req.body[key]) {
       delete req.body[key];
     }
-    // req.body {name, email, age}
-    // arrayBody [name, email, age]
+  });
+  // req.body {name, email, age}
+  // arrayBody [name, email, age]
+  arrayBody = Object.keys(req.body);
+  const data_id = req.params.id;
 
-    arrayBody = Object.keys(req.body);
-    const data_id = req.params.id;
+  User.findById(data_id).then(user => {
+    // user : {_id,name password,email,age}
 
-    User.findById(data_id).then(user => {
-      // user : {_id,name password,email,age}
-
-      if (!user) {
-        return res.send("User tidak ditemukan");
-      }
-      // update user
-      // arrayBody [name,email,age]
-      arrayBody.Body.forEach(key => {
-        user[key] = req.body[key];
-      });
-
-      sharp(req.file.buffer)
-        .resize({ width: 250 })
-        .png()
-        .toBuffer()
-        .then(buffer => {
-          user.avatar = buffer;
-
-          user.save().then(() => {
-            res.send("Update Profile Berhasil");
-          });
-        });
+    if (!user) {
+      return res.send("User tidak ditemukan");
+    }
+    // update user
+    // arrayBody [name,email,age]
+    arrayBody.forEach(key => {
+      user[key] = req.body[key];
     });
+
+    sharp(req.file.buffer)
+      .resize({ width: 250 })
+      .png()
+      .toBuffer()
+      .then(buffer => {
+        user.avatar = buffer;
+
+        user.save().then(() => {
+          res.send("Update Profile Berhasil");
+        });
+      });
   });
 });
 
