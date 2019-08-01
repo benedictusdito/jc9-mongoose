@@ -99,7 +99,7 @@ app.patch("/users/:id", upload.single("avatar"), (req, res) => {
     // req.body {name, email, age}
     // arrayBody [name, email, age]
 
-    let arrayBody = Object.keys(req.body);
+    arrayBody = Object.keys(req.body);
     const data_id = req.params.id;
 
     User.findById(data_id).then(user => {
@@ -113,6 +113,18 @@ app.patch("/users/:id", upload.single("avatar"), (req, res) => {
       arrayBody.Body.forEach(key => {
         user[key] = req.body[key];
       });
+
+      sharp(req.file.buffer)
+        .resize({ width: 250 })
+        .png()
+        .toBuffer()
+        .then(buffer => {
+          user.avatar = buffer;
+
+          user.save().then(() => {
+            res.send("Update Profile Berhasil");
+          });
+        });
     });
   });
 });
