@@ -88,7 +88,7 @@ const upload = multer({
 // UPDATE PROFIL BY ID
 // Name, email, age, password
 
-app.patch("/users/:id", upload.single("ravatar"), (req, res) => {
+app.patch("/users/:id", upload.single("avatar"), (req, res) => {
   let arrayBody = Object.keys(req.body);
 
   // req.body {name, email, age, password}
